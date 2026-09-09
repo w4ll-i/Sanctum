@@ -1,0 +1,58 @@
+services:
+  # ── Nginx reverse proxy ──────────────────────────────────────────────────────
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    container_name: sanctum-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - sanctum_certs:/etc/nginx/certs
+    depends_on:
+      sanctum:
+        condition: service_healthy
+    networks:
+      - sanctum_net
+
+  # ── Sanctum application ───────────────────────────────────────────────────────
+  sanctum:
+    build: .
+    container_name: sanctum
+    restart: unless-stopped
+    # Port NOT exposed publicly — nginx proxies to it internally
+    expose:
+      - "3000"
+    volumes:
+      - sanctum_data:/app/backend/data
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - JWT_ACCESS_SECRET=${JWT_ACCESS_SECRET:-}
+      - JWT_REFRESH_SECRET=${JWT_REFRESH_SECRET:-}
+      - JWT_ACCESS_EXPIRES=${JWT_ACCESS_EXPIRES:-15m}
+      - JWT_REFRESH_EXPIRES=${JWT_REFRESH_EXPIRES:-7d}
+      - ALLOWED_ORIGINS=${ALLOWED_ORIGINS:-http://localhost}
+      - DB_PATH=/app/backend/data/sanctum.db
+      - LOCKOUT_ATTEMPTS=${LOCKOUT_ATTEMPTS:-5}
+      - LOCKOUT_DURATION_MS=${LOCKOUT_DURATION_MS:-900000}
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3000/health', r => process.exit(r.statusCode === 200 ? 0 : 1)).on('error', () => process.exit(1))"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    networks:
+      - sanctum_net
+
+volumes:
+  sanctum_data:
+    driver: local
+  sanctum_certs:
+    driver: local
+
+networks:
+  sanctum_net:
+    driver: bridge

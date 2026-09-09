@@ -1,0 +1,126 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: dark;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    font-size: 15px;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-sanctum-bg text-sanctum-text font-sans antialiased;
+    min-height: 100vh;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-sanctum-border rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-sanctum-subtle;
+  }
+
+  /* Selection */
+  ::selection {
+    background: rgba(99, 102, 241, 0.3);
+  }
+}
+
+@layer components {
+  /* Glass morphism card */
+  .glass {
+    background: rgba(20, 20, 31, 0.8);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  /* Input base styles */
+  .input-base {
+    @apply w-full bg-sanctum-surface border border-sanctum-border rounded-xl px-4 py-3
+           text-sanctum-text placeholder-sanctum-muted
+           focus:outline-none focus:border-sanctum-accent focus:ring-1 focus:ring-sanctum-accent
+           transition-all duration-150;
+  }
+
+  /* Button variants */
+  .btn-primary {
+    @apply bg-sanctum-accent hover:bg-sanctum-accent-hover text-white font-medium
+           px-5 py-2.5 rounded-xl transition-all duration-150 active:scale-[0.98]
+           disabled:opacity-40 disabled:cursor-not-allowed disabled:active:scale-100;
+  }
+
+  .btn-secondary {
+    @apply bg-sanctum-surface hover:bg-sanctum-card text-sanctum-text font-medium
+           border border-sanctum-border hover:border-sanctum-border-light
+           px-5 py-2.5 rounded-xl transition-all duration-150 active:scale-[0.98];
+  }
+
+  .btn-ghost {
+    @apply text-sanctum-muted hover:text-sanctum-text hover:bg-sanctum-card
+           px-3 py-2 rounded-lg transition-all duration-150;
+  }
+
+  .btn-danger {
+    @apply bg-red-500/10 hover:bg-red-500/20 text-red-400 font-medium
+           border border-red-500/20 hover:border-red-500/40
+           px-4 py-2 rounded-xl transition-all duration-150;
+  }
+
+  /* Tag/badge */
+  .badge {
+    @apply inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium;
+  }
+}
+
+@layer utilities {
+  /* Glow effects */
+  .glow-accent {
+    box-shadow: 0 0 20px rgba(99, 102, 241, 0.2);
+  }
+
+  .text-gradient {
+    background: linear-gradient(135deg, #6366f1, #818cf8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Skeleton loader */
+  .skeleton {
+    background: linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.03) 25%,
+      rgba(255, 255, 255, 0.07) 50%,
+      rgba(255, 255, 255, 0.03) 75%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 2s linear infinite;
+  }
+
+  /* Password strength colors */
+  .strength-0 { @apply bg-sanctum-border; }
+  .strength-1 { @apply bg-red-500; }
+  .strength-2 { @apply bg-orange-500; }
+  .strength-3 { @apply bg-yellow-500; }
+  .strength-4 { @apply bg-green-500; }
+}
